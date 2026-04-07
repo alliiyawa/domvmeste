@@ -15,24 +15,15 @@ import '../../../features/app/bloc/app_bloc.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../widgets/user_avatar.dart';
 
-/// Вкладка «Главная» — приветствие с именем и аватаром пользователя.
-///
-/// Читает данные из [AppBloc] через `context.watch`.
 class MainTab extends StatelessWidget {
   const MainTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Получаем объект локализации — содержит геттеры и методы для строк.
-    // Для строк без параметров — геттеры (loc.tabMain).
-    // Для строк с параметрами — методы (loc.greeting(name)).
     final loc = AppLocalizations.of(context);
     final appState = context.watch<AppBloc>().state;
     final user = appState.user;
 
-    // Получаем текстовые стили из темы — это правильный подход.
-    // Стили определены в AppTheme.light → textTheme, а виджеты
-    // обращаются к ним через Theme.of(context).textTheme.
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -56,7 +47,7 @@ class MainTab extends StatelessWidget {
                 _QuickButton(
                   icon: Icons.build_outlined,
                   label: 'Ремонт',
-                  onTap: () {},
+                  onTap: () => context.push(RouteNames.repair), // ← добавь
                 ),
                 _QuickButton(
                   icon: Icons.search_outlined,
@@ -98,7 +89,6 @@ class MainTab extends StatelessWidget {
                 }
 
                 if (state is AnnouncementLoadedState) {
-                  // Показываем максимум 5 объявлений на главном экране
                   final items = state.announcements.take(5).toList();
                   return SizedBox(
                     height: 130,
@@ -107,7 +97,10 @@ class MainTab extends StatelessWidget {
                       itemCount: items.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 12),
                       itemBuilder: (context, index) {
-                        return _AnnouncementCard(title: items[index].title);
+                        return _AnnouncementCard(
+                          title: items[index].title,
+                          imageUrl: items[index].imageUrl,
+                        );
                       },
                     ),
                   );
@@ -148,14 +141,11 @@ class MainTab extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = state.news[index];
                     return NewsCard(
+                      id: item.id,
                       title: item.title,
                       description: item.description,
+                      imageUrl: item.imageUrl,
                       date: DateFormat('dd.MM.yyyy').format(item.createdAt),
-                      onDelete: () {
-                        context.read<NewsBloc>().add(
-                          NewsDeleteEvent(id: item.id),
-                        );
-                      },
                     );
                   },
                 );
@@ -204,32 +194,34 @@ class _QuickButton extends StatelessWidget {
 
 class _AnnouncementCard extends StatelessWidget {
   final String title;
-
-  const _AnnouncementCard({required this.title});
+  final String? imageUrl;
+  const _AnnouncementCard({required this.title, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 120,
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Фото заглушка сверху
-          Container(
-            width: 120,
-            height: 100,
-            decoration: BoxDecoration(
-              color: Colors.blue[200],
-              borderRadius: BorderRadius.circular(12),
-            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: imageUrl != null && imageUrl!.startsWith('http')
+                ? Image.network(
+                    imageUrl!,
+                    width: 120,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  )
+                : Container(width: 120, height: 100, color: Colors.grey[400]),
           ),
           const SizedBox(height: 6),
+
           Text(
             title,
-            style: const TextStyle(fontSize: 17),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
             maxLines: 1,
-          
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -240,8 +232,9 @@ class _AnnouncementCard extends StatelessWidget {
 class _NewsCard extends StatelessWidget {
   final String title;
   final String date;
+  final String? imageUrl;
 
-  const _NewsCard({required this.title, required this.date});
+  const _NewsCard({required this.title, required this.date, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -253,13 +246,16 @@ class _NewsCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.grey[400],
-              borderRadius: BorderRadius.circular(8),
-            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: imageUrl != null && imageUrl!.startsWith('http')
+                ? Image.network(
+                    imageUrl!,
+                    width: 120,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  )
+                : Container(width: 120, height: 100, color: Colors.grey[400]),
           ),
           const SizedBox(width: 12),
           Expanded(

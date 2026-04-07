@@ -45,7 +45,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       await _newsCollection.add({
         'title': event.title,
         'description': event.description,
-        'imageUrl': '',
+        'imageUrl': event.imageUrl ?? '', 
         'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {

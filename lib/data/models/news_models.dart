@@ -28,7 +28,7 @@ class NewsModels extends Equatable {
       id: id,
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      imageUrl: json['imageUrl'] as String? ?? '',
+      imageUrl: json['imageUrl']?.toString() ?? '',
       createdAt: json['createdAt'] != null
           ? (json['createdAt'] as dynamic).toDate()
           : DateTime(0),

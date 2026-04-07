@@ -8,9 +8,10 @@ class AnnouncementModel extends Equatable {
   final String description;
 
   final String authorId;
-
+  final String phone;
+  final String price;
   final String authorName;
-
+  final String imageUrl;
   final DateTime createdAt;
 
   const AnnouncementModel({
@@ -18,8 +19,11 @@ class AnnouncementModel extends Equatable {
     required this.title,
     required this.description,
     required this.authorId,
+    required this.phone,
+    required this.price,
     required this.authorName,
     required this.createdAt,
+    required this.imageUrl,
   });
 
   static final AnnouncementModel empty = AnnouncementModel(
@@ -27,8 +31,11 @@ class AnnouncementModel extends Equatable {
     title: '',
     description: '',
     authorId: '',
+    phone: '',
+    price: '',
     authorName: '',
     createdAt: DateTime(0),
+    imageUrl: '',
   );
 
   bool get isEmpty => id.isEmpty;
@@ -37,10 +44,13 @@ class AnnouncementModel extends Equatable {
   factory AnnouncementModel.fromJson(Map<String, dynamic> json, String id) {
     return AnnouncementModel(
       id: id,
-      title: json['title'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-      authorId: json['authorId'] as String? ?? '',
-      authorName: json['authorName'] as String? ?? '',
+      title: json['title']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      authorId: json['authorId']?.toString() ?? '',
+      phone: json['phone']?.toString() ?? '',
+      imageUrl: json['imageUrl']?.toString() ?? '',
+      price: json['price']?.toString() ?? '',
+      authorName: json['authorName']?.toString() ?? '',
       createdAt: json['createdAt'] != null
           ? (json['createdAt'] as dynamic).toDate()
           : DateTime(0),
@@ -52,6 +62,8 @@ class AnnouncementModel extends Equatable {
       'title': title,
       'description': description,
       'authorId': authorId,
+      'phone': phone,
+      'price': price,
       'authorName': authorName,
       'createdAt': createdAt,
     };
@@ -63,6 +75,8 @@ class AnnouncementModel extends Equatable {
     title,
     description,
     authorId,
+    phone,
+    price,
     authorName,
     createdAt,
   ];

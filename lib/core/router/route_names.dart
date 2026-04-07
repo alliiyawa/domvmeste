@@ -40,4 +40,10 @@ class RouteNames {
   static const String newsName = 'news';
   static const String announcementsName = 'announcements';
   static const String contactsName = 'contacts';
+  static const String announcementDetail = '/home/announcements/detail';
+  static const String announcementDetailName = 'announcementDetail';
+  static const String newsDetails = '/home/news/details';
+  static const String newsDetailsName = 'newsDetails';
+  static const String repair = '/home/repair';
+  static const String repairName = 'repair';
 }

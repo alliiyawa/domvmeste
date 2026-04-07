@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:dom_vmeste/features/news/bloc/news_bloc.dart';
 import 'package:dom_vmeste/features/news/bloc/news_state.dart';
 import 'package:dom_vmeste/features/news/bloc/news_event.dart';
 import 'package:dom_vmeste/features/news/ui/news_card.dart';
+import 'package:dom_vmeste/core/services/cloudinary_service.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -15,6 +19,22 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
+  File? selectedImage;
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+      maxWidth: 1024,
+    );
+
+    if (image != null) {
+      setState(() {
+        selectedImage = File(image.path);
+      });
+    }
+  }
+
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -25,21 +45,25 @@ class _NewsScreenState extends State<NewsScreen> {
     super.dispose();
   }
 
-  void _onAddPressed() {
+  Future<void> _onAddPressed() async {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
 
     if (title.isEmpty || description.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Заполните все поля')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Заполните все поля')));
       return;
+    }
+    String? imageUrl;
+    if (selectedImage != null) {
+      imageUrl = await CloudinaryService.uploadImage(selectedImage!);
     }
 
     context.read<NewsBloc>().add(
-      NewsAddEvent(title: title, description: description),
+      NewsAddEvent(title: title, description: description, imageUrl: imageUrl),
     );
-
+    selectedImage = null;
     _titleController.clear();
     _descriptionController.clear();
     Navigator.of(context).pop();
@@ -53,66 +77,90 @@ class _NewsScreenState extends State<NewsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Новая новость',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 24,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  hintText: 'Заголовок',
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Новая новость',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _descriptionController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  hintText: 'Описание',
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      hintText: 'Заголовок',
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _onAddPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[400],
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final picker = ImagePicker();
+                      final image = await picker.pickImage(
+                        source: ImageSource.gallery,
+                        imageQuality: 70, // сжимаем до 70% качества
+                        maxWidth: 1024,
+                      );
+                      if (image != null) {
+                        setModalState(() {
+                          selectedImage = File(image.path);
+                        });
+                      }
+                    },
+                    child: const Text('Выбрать фото'),
                   ),
-                ),
-                child: const Text(
-                  'Добавить новость',
-                  style: TextStyle(fontSize: 16),
-                ),
+                  const SizedBox(height: 12),
+                  if (selectedImage != null)
+                    Image.file(selectedImage!, height: 120),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _descriptionController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: 'Описание',
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: _onAddPressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[400],
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Добавить новость',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -145,8 +193,10 @@ class _NewsScreenState extends State<NewsScreen> {
         itemBuilder: (context, index) {
           final item = state.news[index];
           return NewsCard(
+            id: item.id,
             title: item.title,
             description: item.description,
+            imageUrl: item.imageUrl,
             date: DateFormat('dd.MM.yyyy').format(item.createdAt),
             onDelete: () {
               context.read<NewsBloc>().add(NewsDeleteEvent(id: item.id));

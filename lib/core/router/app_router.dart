@@ -1,3 +1,6 @@
+import 'package:dom_vmeste/features/announcements/ui/announcement_detail_screen.dart';
+import 'package:dom_vmeste/features/news/ui/news_details_screen.dart';
+import 'package:dom_vmeste/features/repair/ui/repair_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,20 +15,6 @@ import '../../features/register/ui/register_screen.dart';
 import '../../features/splash/ui/splash_screen.dart';
 import 'route_names.dart';
 
-/// Конфигурация навигации (GoRouter).
-///
-/// Структура маршрутов:
-/// ```
-/// /                    → SplashScreen
-/// /login               → LoginScreen
-/// /register            → RegisterScreen
-/// /home                → HomeShell (ShellRoute с BottomNavigationBar)
-///   /home/main         → MainTab
-///   /home/profile      → ProfileTab
-///   /home/news         → NewsScreen
-///   /home/announcements → AnnouncementsScreen
-///   /home/contacts     → ContactsScreen
-/// ```
 class AppRouter {
   static GoRouter create() {
     return GoRouter(
@@ -75,12 +64,47 @@ class AppRouter {
             GoRoute(
               name: RouteNames.announcementsName,
               path: RouteNames.announcements,
-              builder: (context, state) => const AnnouncementsScreen(),
+              builder: (context, state) => AnnouncementsScreen(),
+            ),
+            GoRoute(
+              name: RouteNames.announcementDetailName,
+              path: RouteNames.announcementDetail,
+              builder: (context, state) {
+                // extra содержит данные переданные через context.push()
+                final extra = state.extra as Map<String, dynamic>;
+                return AnnouncementDetailScreen(
+                  title: extra['title'] as String,
+                  description: extra['description'] as String,
+                  date: extra['date'] as String,
+                  phone: extra['phone'] as String,
+                  price: extra['price'] as String,
+                  imageUrl: extra['imageUrl'] as String,
+                );
+              },
+            ),
+            GoRoute(
+              name: RouteNames.newsDetailsName,
+              path: RouteNames.newsDetails,
+              builder: (context, state) {
+                // extra содержит данные переданные через context.push()
+                final extra = state.extra as Map<String, dynamic>;
+                return NewsDetailsScreen(
+                  title: extra['title'] as String,
+                  description: extra['description'] as String,
+                  date: extra['date'] as String,
+                  imageUrl: extra['imageUrl'] as String,
+                );
+              },
             ),
             GoRoute(
               name: RouteNames.contactsName,
               path: RouteNames.contacts,
               builder: (context, state) => const ContactsScreen(),
+            ),
+            GoRoute(
+              name: RouteNames.repairName,
+              path: RouteNames.repair,
+              builder: (context, state) => const RepairScreen(),
             ),
           ],
         ),
