@@ -46,4 +46,6 @@ class RouteNames {
   static const String newsDetailsName = 'newsDetails';
   static const String repair = '/home/repair';
   static const String repairName = 'repair';
+  static const String lost = '/home/lost';
+  static const String lostName = 'lost';
 }

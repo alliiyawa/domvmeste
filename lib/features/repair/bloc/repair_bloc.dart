@@ -6,30 +6,32 @@ import 'package:dom_vmeste/features/repair/bloc/repair_event.dart';
 import 'package:dom_vmeste/features/repair/bloc/repair_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RepairBloc extends Bloc<RepairEvent, RepairState>{
-  final _repairrequestsCollection = FirebaseFirestore.instance.collection('requests');
+class RepairBloc extends Bloc<RepairEvent, RepairState> {
+  final _repairrequestsCollection = FirebaseFirestore.instance.collection(
+    'requests',
+  );
 
   StreamSubscription<QuerySnapshot>? _requestsSubscription;
   RepairBloc() : super(RepairInitialState()) {
     on<RepairLoadEvent>(_onLoad);
     on<RepairAddEvent>(_onAdd);
     on<RepairDeleteEvent>(_onDelete);
-    on<_RepairUpdatedEvent>((event, emit) => emit(RepairLoadedState(requests: event.requests)));
-    on<_RepairErrorEvent>((event, emit) => emit(RepairErrorState(message: event.message)),);
+    on<_RepairUpdatedEvent>(
+      (event, emit) => emit(RepairLoadedState(requests: event.requests)),
+    );
+    on<_RepairErrorEvent>(
+      (event, emit) => emit(RepairErrorState(message: event.message)),
+    );
   }
-  
-  
 
   void _onLoad(RepairLoadEvent event, Emitter<RepairState> emit) {
     emit(RepairLoadingState());
     _requestsSubscription?.cancel();
     _requestsSubscription = _repairrequestsCollection
-    .orderBy('createdAt', descending: true)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .listen(
-          (snapshot) 
-
-          {
+          (snapshot) {
             final requests = snapshot.docs.map((doc) {
               return RepairRequestModel.fromJson(doc.data(), doc.id);
             }).toList();
@@ -45,22 +47,24 @@ class RepairBloc extends Bloc<RepairEvent, RepairState>{
   FutureOr<void> _onAdd(RepairAddEvent event, Emitter<RepairState> emit) async {
     try {
       await _repairrequestsCollection.add({
-        'repairType': event.repairType, 
-        'description' : event.description,
-   'date': event.date,
-  'timeFrom' : event.timeFrom,
-  'timeTo': event.timeTo,
-  'address': event.address,
-  'imageUrls': event.imageUrls ?? '',
-  'createdAt' : FieldValue.serverTimestamp(),
-
+        'repairType': event.repairType,
+        'description': event.description,
+        'date': event.date,
+        'timeFrom': event.timeFrom,
+        'timeTo': event.timeTo,
+        'address': event.address,
+        'imageUrls': event.imageUrls ?? [],
+        'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
       emit(RepairErrorState(message: e.toString()));
     }
   }
 
-  FutureOr<void> _onDelete(RepairDeleteEvent event, Emitter<RepairState> emit) async {
+  FutureOr<void> _onDelete(
+    RepairDeleteEvent event,
+    Emitter<RepairState> emit,
+  ) async {
     try {
       await _repairrequestsCollection.doc(event.id).delete();
     } catch (e) {
@@ -69,12 +73,12 @@ class RepairBloc extends Bloc<RepairEvent, RepairState>{
   }
 }
 
-class _RepairErrorEvent extends RepairEvent{
+class _RepairErrorEvent extends RepairEvent {
   final String message;
   _RepairErrorEvent({required this.message});
 }
 
-class _RepairUpdatedEvent extends RepairEvent{
+class _RepairUpdatedEvent extends RepairEvent {
   final List<RepairRequestModel> requests;
-_RepairUpdatedEvent({required this.requests});
+  _RepairUpdatedEvent({required this.requests});
 }

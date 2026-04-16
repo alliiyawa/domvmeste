@@ -1,3 +1,7 @@
+import 'package:dom_vmeste/features/lost/bloc/lost_bloc.dart';
+import 'package:dom_vmeste/features/lost/bloc/lost_event.dart';
+import 'package:dom_vmeste/features/repair/bloc/repair_bloc.dart';
+import 'package:dom_vmeste/features/repair/bloc/repair_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +15,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../bloc/app_bloc.dart';
 import 'package:dom_vmeste/features/announcements/bloc/announcements_event.dart';
 import 'package:dom_vmeste/features/announcements/bloc/announcements_bloc.dart';
+
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -30,9 +35,11 @@ class App extends StatelessWidget {
           // cascade (..) — вызываем add() на том же объекте что создаём.
           create: (_) => NewsBloc()..add(NewsLoadEvent()),
         ),
-         BlocProvider(
-      create: (_) => AnnouncementsBloc()..add(AnnouncementLoadEvent()),
-    ),
+        BlocProvider(
+          create: (_) => AnnouncementsBloc()..add(AnnouncementLoadEvent()),
+        ),
+        BlocProvider(create: (_) => LostBloc()..add(LostLoadEvent())),
+        BlocProvider(create: (_) => RepairBloc()..add(RepairLoadEvent())),
       ],
       child: MaterialApp.router(
         title: AppConstants.appName,

@@ -52,7 +52,7 @@ class MainTab extends StatelessWidget {
                 _QuickButton(
                   icon: Icons.search_outlined,
                   label: 'Потеряшки',
-                  onTap: () {},
+                  onTap: () => context.push(RouteNames.lost),
                 ),
                 _QuickButton(
                   icon: Icons.phone_outlined,

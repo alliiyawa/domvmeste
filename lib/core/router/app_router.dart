@@ -1,4 +1,5 @@
 import 'package:dom_vmeste/features/announcements/ui/announcement_detail_screen.dart';
+import 'package:dom_vmeste/features/lost/ui/lost_screen.dart';
 import 'package:dom_vmeste/features/news/ui/news_details_screen.dart';
 import 'package:dom_vmeste/features/repair/ui/repair_screen.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +107,10 @@ class AppRouter {
               path: RouteNames.repair,
               builder: (context, state) => const RepairScreen(),
             ),
+             GoRoute(
+              name: RouteNames.lost,
+              path: RouteNames.lost,
+              builder: (context, state) => const LostScreen(),)
           ],
         ),
       ],

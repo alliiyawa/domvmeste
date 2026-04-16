@@ -1,5 +1,10 @@
+import 'package:dom_vmeste/features/repair/bloc/repair_bloc.dart';
+import 'package:dom_vmeste/features/repair/bloc/repair_event.dart';
+import 'package:dom_vmeste/features/repair/bloc/repair_state.dart';
 import 'package:dom_vmeste/features/repair/ui/create_request_screen.dart';
+import 'package:dom_vmeste/features/repair/ui/request_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'repair_card.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -8,7 +13,22 @@ class RepairScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<RepairBloc, RepairState>(
+  listener: (context, state) {
+    if (state is RepairErrorState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.message)),
+      );
+    }
+
+    if (state is RepairLoadedState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Заявка отправлена!')),
+      );
+      Navigator.pop(context);
+    }
+  },
+  child: Scaffold(
       appBar: AppBar(title: const Text('Ремонт')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -36,7 +56,13 @@ class RepairScreen extends StatelessWidget {
                   color: Colors.blue[100]!,
                   iconColor: Colors.blue,
                   isEmergency: false,
-                  onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateRequestScreen(repairType: 'Сантехника'))),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const CreateRequestScreen(repairType: 'Сантехника'),
+                    ),
+                  ),
                 ),
                 RepairCard(
                   icon: FontAwesomeIcons.plug,
@@ -45,7 +71,13 @@ class RepairScreen extends StatelessWidget {
                   color: Colors.yellow[100]!,
                   iconColor: Colors.orange,
                   isEmergency: false,
-                  onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateRequestScreen(repairType: 'Электрика'))),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const CreateRequestScreen(repairType: 'Электрика'),
+                    ),
+                  ),
                 ),
                 RepairCard(
                   icon: FontAwesomeIcons.building,
@@ -54,7 +86,14 @@ class RepairScreen extends StatelessWidget {
                   color: Colors.green[100]!,
                   iconColor: Colors.green,
                   isEmergency: false,
-                  onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateRequestScreen(repairType: 'Общедомовые нужды'))),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CreateRequestScreen(
+                        repairType: 'Общедомовые нужды',
+                      ),
+                    ),
+                  ),
                 ),
                 RepairCard(
                   icon: FontAwesomeIcons.exclamationTriangle,
@@ -63,71 +102,106 @@ class RepairScreen extends StatelessWidget {
                   color: Colors.red[400]!,
                   iconColor: Colors.white,
                   isEmergency: true,
-                  onPressed: ()=>  _showEmergencyDialog(context),
+                  onPressed: () => _showEmergencyDialog(context),
                 ),
               ],
             ),
             const SizedBox(height: 24),
 
             const Text(
-              'История заявок',
+              'Мои заявки',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
+            BlocBuilder<RepairBloc, RepairState>(
+              builder: (context, state) {
+                if (state is RepairLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (state is RepairErrorState) {
+                  return Center(child: Text('Ошибка: ${state.message}'));
+                }
+                if (state is RepairLoadedState && state.requests.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Заявок пока нет',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  );
+                }
+                if (state is RepairLoadedState) {
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.requests.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      final item = state.requests[index];
+                      return RequestCard(
+                        request: item,
+                        onDelete: () => context.read<RepairBloc>().add(
+                          RepairDeleteEvent(id: item.id),
+                        ),
+                      );
+                    },
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
           ],
         ),
       ),
+    )
     );
-    
   }
+
   void _showEmergencyDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      title: const Text(
-        'Номера экстренных служб:',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          _EmergencyRow(name: 'Пожарная служба', number: '101'),
-          _EmergencyRow(name: 'Полиция', number: '102'),
-          _EmergencyRow(name: 'Скорая помощь', number: '103'),
-          _EmergencyRow(name: 'Аварийная служба газа', number: '104'),
-          _EmergencyRow(name: 'Служба спасения', number: '112'),
-        ],
-      ),
-      actionsAlignment: MainAxisAlignment.center,
-      actions: [
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue[400],
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Номера экстренных служб:',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            _EmergencyRow(name: 'Пожарная служба', number: '101'),
+            _EmergencyRow(name: 'Полиция', number: '102'),
+            _EmergencyRow(name: 'Скорая помощь', number: '103'),
+            _EmergencyRow(name: 'Аварийная служба газа', number: '104'),
+            _EmergencyRow(name: 'Служба спасения', number: '112'),
+          ],
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[400],
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'ПОЗВОНИТЬ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
-            child: const Text(
-              'ПОЗВОНИТЬ',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
           ),
-        ),
-      ],
-    ),
-  );
-  
-}
-
+        ],
+      ),
+    );
+  }
 }
 
 class _EmergencyRow extends StatelessWidget {
@@ -152,10 +226,7 @@ class _EmergencyRow extends StatelessWidget {
           ),
           Text(
             number,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ],
       ),

@@ -1,16 +1,16 @@
 import 'dart:io';
 
+import 'package:dom_vmeste/features/repair/bloc/repair_bloc.dart';
+import 'package:dom_vmeste/features/repair/bloc/repair_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dom_vmeste/core/services/cloudinary_service.dart';
 
 class CreateRequestScreen extends StatefulWidget {
   final String repairType;
 
-  const CreateRequestScreen({
-    super.key,
-    required this.repairType,
-  });
+  const CreateRequestScreen({super.key, required this.repairType});
 
   @override
   State<CreateRequestScreen> createState() => _CreateRequestScreenState();
@@ -54,9 +54,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   // Выбор фото из галереи
   Future<void> _pickImage() async {
     if (_selectedImages.length >= 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Максимум 3 фото')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Максимум 3 фото')));
       return;
     }
 
@@ -114,17 +114,27 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
 
   String _monthName(int month) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return months[month - 1];
   }
 
   Future<void> _onSubmit() async {
     if (_descriptionController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Опишите проблему')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Опишите проблему')));
       return;
     }
 
@@ -143,9 +153,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
 
     // Логика сохранения в Firestore будет добавлена позже
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Заявка отправлена!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Заявка отправлена!')));
       Navigator.of(context).pop();
     }
   }
@@ -153,9 +163,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ремонт'),
-      ),
+      appBar: AppBar(title: const Text('Ремонт')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -224,7 +232,11 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_today, size: 18, color: Colors.grey),
+                    const Icon(
+                      Icons.calendar_today,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       _formatDate(_selectedDate),
@@ -276,10 +288,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text(
-                          'Прикрепить файл',
-                          style: TextStyle(fontSize: 17),
-                        ),
+                        Text('Прикрепить файл', style: TextStyle(fontSize: 17)),
                         Text(
                           '(макс. 3 фото)',
                           style: TextStyle(fontSize: 11, color: Colors.grey),
@@ -342,10 +351,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
             const SizedBox(height: 20),
 
             // ── Адрес ─────────────────────────────────────
-            const Text(
-              'Адрес',
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
+            const Text('Адрес', style: TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextField(
               controller: _addressController,
@@ -367,7 +373,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isUploading ? null : _onSubmit,
+                onPressed: _onAddPressed,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue[400],
                   foregroundColor: Colors.white,
@@ -388,5 +394,40 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _onAddPressed() async {
+    if (_descriptionController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Опишите проблему')));
+      return;
+    }
+
+    setState(() => _isUploading = true);
+
+    // 1. Загружаем фото
+    final List<String> imageUrls = [];
+    for (final image in _selectedImages) {
+      final url = await CloudinaryService.uploadImage(image);
+      if (url != null) imageUrls.add(url);
+    }
+
+    setState(() => _isUploading = false);
+
+    // 2. Отправляем в BLoC
+    context.read<RepairBloc>().add(
+      RepairAddEvent(
+        repairType: _selectedType ?? '',
+        description: _descriptionController.text.trim(),
+        date: _selectedDate?.toIso8601String() ?? '',
+        timeFrom: _formatTime(_selectedTimeFrom),
+        timeTo: _formatTime(_selectedTimeTo),
+        address: _addressController.text.trim(),
+        imageUrls: imageUrls,
+      ),
+    );
+
+    
   }
 }
