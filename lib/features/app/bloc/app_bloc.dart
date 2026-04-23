@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dom_vmeste/data/models/user_models.dart';
 
 import '../../../core/utils/logger.dart';
-import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
 import 'app_event.dart';
 import 'app_state.dart';
@@ -23,7 +23,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   AppBloc({required AuthRepository authRepository})
       : _authRepository = authRepository,
-        super(const AppState.unknown()) {
+        super(AppState.unknown()) {
     // Регистрируем обработчики событий.
     on<AppAuthStateChanged>(_onAuthStateChanged);
     on<AppSignOutRequested>(_onSignOutRequested);
@@ -44,11 +44,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) {
     if (event.user.isNotEmpty) {
-      AppLogger.info('AppBloc: пользователь авторизован — ${event.user.email}');
+      AppLogger.info('AppBloc: пользователь авторизован — ${event.user.name}');
       emit(AppState.authenticated(event.user));
     } else {
       AppLogger.info('AppBloc: пользователь не авторизован');
-      emit(const AppState.unauthenticated());
+      emit(AppState.unauthenticated());
     }
   }
 

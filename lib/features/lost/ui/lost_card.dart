@@ -15,7 +15,7 @@ class LostCard extends StatelessWidget {
   });
 
   Future<void> _callPhone() async {
-    final uri = Uri(scheme: 'tel', path: item.phone);
+  final uri = Uri.parse('tel:${item.phone}');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
@@ -113,29 +113,33 @@ class LostCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Автор и телефон
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Автор: ',
-                        style: TextStyle(color: Colors.grey, fontSize: 13),
-                      ),
-                      Text(
-                        item.authorName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'Автор: ',
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
                         ),
+                        Text(
+                          item.authorName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                      Text(
+                        item.phone,
+                        style: const TextStyle(fontSize: 13),  
                       ),
-                    ],
-                  ),
-                  Text(
-                    item.phone,
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                ],
+                    
+                  ],
+                ),
               ),
 
               // Кнопка позвонить

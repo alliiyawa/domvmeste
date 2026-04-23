@@ -1,47 +1,32 @@
+import 'package:dom_vmeste/data/models/user_models.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../data/models/user_model.dart';
-
-/// Состояния (states) для [AppBloc].
-///
-/// State — это «как сейчас выглядит приложение».
-/// UI перестраивается каждый раз, когда BLoC эмитит новый state.
-
-/// Перечисление статусов авторизации.
 enum AppStatus {
-  /// Ещё не определили, вошёл ли пользователь.
   unknown,
-
-  /// Пользователь авторизован.
   authenticated,
-
-  /// Пользователь не авторизован.
   unauthenticated,
 }
 
-/// Состояние приложения.
 class AppState extends Equatable {
-  /// Текущий статус авторизации.
   final AppStatus status;
-
-  /// Текущий пользователь.
   final UserModel user;
 
-  const AppState({
+  // ← убрали const везде, заменили на обычные конструкторы
+  AppState({
     required this.status,
-    this.user = UserModel.empty,
-  });
+    UserModel? user,
+  }) : user = user ?? UserModel.empty;
 
-  /// Начальное состояние — статус неизвестен.
-  const AppState.unknown()
+  // Начальное состояние
+  AppState.unknown()
       : status = AppStatus.unknown,
         user = UserModel.empty;
 
-  /// Пользователь авторизован.
-  const AppState.authenticated(this.user) : status = AppStatus.authenticated;
+  // Пользователь авторизован
+  AppState.authenticated(this.user) : status = AppStatus.authenticated;
 
-  /// Пользователь не авторизован.
-  const AppState.unauthenticated()
+  // Пользователь не авторизован
+  AppState.unauthenticated()
       : status = AppStatus.unauthenticated,
         user = UserModel.empty;
 

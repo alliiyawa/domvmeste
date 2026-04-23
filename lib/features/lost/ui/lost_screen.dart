@@ -9,6 +9,7 @@ import 'package:dom_vmeste/features/lost/bloc/lost_event.dart';
 import 'package:dom_vmeste/features/lost/bloc/lost_state.dart';
 import 'package:dom_vmeste/features/app/bloc/app_bloc.dart';
 import 'lost_card.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class LostScreen extends StatefulWidget {
   const LostScreen({super.key});
@@ -24,7 +25,11 @@ class _LostScreenState extends State<LostScreen> {
   // Контроллеры формы
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _phoneController = TextEditingController();
+ final phoneMask = MaskTextInputFormatter(
+  mask: '+7 (###) ###-##-##',
+  filter: { "#": RegExp(r'[0-9]') },
+);
+final _phoneController = TextEditingController();
 
   File? _selectedImage;
   bool _isUploading = false;
@@ -33,7 +38,7 @@ class _LostScreenState extends State<LostScreen> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    _phoneController.dispose();
+   _phoneController.dispose();
     super.dispose();
   }
 
@@ -53,7 +58,7 @@ class _LostScreenState extends State<LostScreen> {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     final phone = _phoneController.text.trim();
-    final authorName = context.read<AppBloc>().state.user.displayName;
+    final authorName = context.read<AppBloc>().state.user.name;
 
     if (title.isEmpty || description.isEmpty || phone.isEmpty) {
       ScaffoldMessenger.of(
@@ -88,6 +93,7 @@ class _LostScreenState extends State<LostScreen> {
     _descriptionController.clear();
     _phoneController.clear();
     _selectedImage = null;
+    phoneMask.clear();
 
     Navigator.of(context).pop();
   }
@@ -160,16 +166,19 @@ class _LostScreenState extends State<LostScreen> {
                   const SizedBox(height: 12),
 
                   // Телефон
-                  TextField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      hintText: 'Контактный телефон',
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+                  Expanded(
+                    child: TextField(
+                      controller: _phoneController,
+                      inputFormatters: [phoneMask],
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: '+7 (___) ___-__-__',
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),

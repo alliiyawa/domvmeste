@@ -13,22 +13,7 @@ class RepairScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RepairBloc, RepairState>(
-  listener: (context, state) {
-    if (state is RepairErrorState) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message)),
-      );
-    }
-
-    if (state is RepairLoadedState) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Заявка отправлена!')),
-      );
-      Navigator.pop(context);
-    }
-  },
-  child: Scaffold(
+    return Scaffold(
       appBar: AppBar(title: const Text('Ремонт')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -154,8 +139,8 @@ class RepairScreen extends StatelessWidget {
           ],
         ),
       ),
-    )
     );
+   
   }
 
   void _showEmergencyDialog(BuildContext context) {

@@ -29,7 +29,7 @@ class RouteNames {
   static const String announcements = '/home/announcements';
 
   /// Экран контактов.
-  static const String contacts = '/home/contacts';
+  static const String rules= '/home/rules';
 
   // ── Имена (names) — используем в GoRoute(name: ...) ──────────
   static const String splashName = 'splash';
@@ -39,7 +39,7 @@ class RouteNames {
   static const String profileName = 'profile';
   static const String newsName = 'news';
   static const String announcementsName = 'announcements';
-  static const String contactsName = 'contacts';
+  static const String rulesName = 'rules';
   static const String announcementDetail = '/home/announcements/detail';
   static const String announcementDetailName = 'announcementDetail';
   static const String newsDetails = '/home/news/details';

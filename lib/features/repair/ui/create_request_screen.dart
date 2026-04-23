@@ -33,7 +33,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     'Сантехника',
     'Электрика',
     'Общедомовые нужды',
-    'Аварийная служба',
+    
   ];
 
   @override
@@ -215,52 +215,102 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
               ),
             ),
             const SizedBox(height: 20),
+// ── ДАТА ─────────────────────────────────────
+const Text(
+  'Дата',
+  style: TextStyle(fontWeight: FontWeight.w600),
+),
+const SizedBox(height: 8),
+GestureDetector(
+  onTap: _pickDate,
+  child: Container(
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey[300]!),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        const Icon(Icons.calendar_today, size: 18, color: Colors.grey),
+        const SizedBox(width: 8),
+        Text(
+          _formatDate(_selectedDate),
+          style: const TextStyle(color: Colors.grey),
+        ),
+      ],
+    ),
+  ),
+),
 
-            // ── Время ─────────────────────────────────────
-            const Text(
-              'Выберите время',
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            GestureDetector(
-              onTap: _pickDate,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _formatDate(_selectedDate),
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    GestureDetector(
-                      onTap: () => _pickTime(true),
-                      child: Text(
-                        _formatTime(_selectedTimeFrom),
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                    const Text(' - ', style: TextStyle(color: Colors.grey)),
-                    GestureDetector(
-                      onTap: () => _pickTime(false),
-                      child: Text(
-                        _formatTime(_selectedTimeTo),
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                  ],
-                ),
+const SizedBox(height: 20),
+
+// ── ВРЕМЯ ─────────────────────────────────────
+const Text(
+  'Время',
+  style: TextStyle(fontWeight: FontWeight.w600),
+),
+const SizedBox(height: 8),
+
+Row(
+  children: [
+    // Время С
+    Expanded(
+      child: GestureDetector(
+        onTap: () => _pickTime(true),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.access_time, size: 18, color: Colors.grey),
+              const SizedBox(width: 6),
+              Text(
+                _selectedTimeFrom == null
+                    ? 'С --:--'
+                    : 'С ${_formatTime(_selectedTimeFrom)}',
+                style: const TextStyle(color: Colors.grey),
               ),
-            ),
+            ],
+          ),
+        ),
+      ),
+    ),
+    
+
+    const SizedBox(width: 10),
+
+    // Время ДО
+    Expanded(
+      child: GestureDetector(
+        onTap: () => _pickTime(false),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.access_time, size: 18, color: Colors.grey),
+              const SizedBox(width: 6),
+              Text(
+                _selectedTimeTo == null
+                    ? 'До --:--'
+                    : 'До ${_formatTime(_selectedTimeTo)}',
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  ],
+),
             const SizedBox(height: 20),
 
             // ── Фото / Видео ──────────────────────────────
@@ -397,6 +447,14 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   }
 
   Future<void> _onAddPressed() async {
+    if (_selectedDate == null ||
+    _selectedTimeFrom == null ||
+    _selectedTimeTo == null) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Выберите дату и время')),
+  );
+  return;
+}
     if (_descriptionController.text.trim().isEmpty) {
       ScaffoldMessenger.of(
         context,

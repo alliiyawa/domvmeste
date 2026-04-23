@@ -1,6 +1,6 @@
+import 'package:dom_vmeste/data/models/user_models.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../data/models/user_model.dart';
 
 /// События (events) для [AppBloc].
 ///

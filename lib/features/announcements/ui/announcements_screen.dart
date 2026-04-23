@@ -10,6 +10,7 @@ import 'package:dom_vmeste/features/announcements/bloc/announcements_state.dart'
 import 'package:dom_vmeste/features/announcements/bloc/announcements_event.dart';
 import 'package:dom_vmeste/features/announcements/ui/announcements_card.dart';
 import 'package:dom_vmeste/core/services/cloudinary_service.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class AnnouncementsScreen extends StatefulWidget {
   AnnouncementsScreen({super.key});
@@ -39,6 +40,10 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   final _descriptionController = TextEditingController();
   final _phoneController = TextEditingController();
   final _priceController = TextEditingController();
+   final phoneMask = MaskTextInputFormatter(
+  mask: '+7 (###) ###-##-##',
+  filter: { "#": RegExp(r'[0-9]') },
+);
   @override
   void dispose() {
     _titleController.dispose();
@@ -155,10 +160,11 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                   ),
                   const SizedBox(height: 12),
                   TextField(
+                    inputFormatters: [phoneMask],
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      hintText: 'Контактный телефон',
+                      hintText:  '+7 (___) ___-__-__',
                       filled: true,
                       fillColor: Colors.grey[100],
                       border: OutlineInputBorder(

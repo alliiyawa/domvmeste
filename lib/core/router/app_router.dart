@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/announcements/ui/announcements_screen.dart';
-import '../../features/contacts/ui/contacts_screen.dart';
+import '../../features/rules/ui/rules_screen.dart';
 import '../../features/home/ui/home_shell.dart';
 import '../../features/home/ui/main_tab.dart';
 import '../../features/home/ui/profile_tab.dart';
@@ -98,9 +98,9 @@ class AppRouter {
               },
             ),
             GoRoute(
-              name: RouteNames.contactsName,
-              path: RouteNames.contacts,
-              builder: (context, state) => const ContactsScreen(),
+              name: RouteNames.rulesName,
+              path: RouteNames.rules,
+              builder: (context, state) => const RulesScreen(),
             ),
             GoRoute(
               name: RouteNames.repairName,

@@ -1,3 +1,4 @@
+import 'package:dom_vmeste/core/constants/app_constans.dart';
 import 'package:dom_vmeste/core/router/route_names.dart';
 import 'package:dom_vmeste/features/announcements/bloc/announcements_bloc.dart';
 import 'package:dom_vmeste/features/announcements/bloc/announcements_state.dart';
@@ -7,10 +8,10 @@ import 'package:dom_vmeste/features/news/bloc/news_state.dart';
 import 'package:dom_vmeste/features/news/ui/news_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../features/app/bloc/app_bloc.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../widgets/user_avatar.dart';
@@ -55,9 +56,9 @@ class MainTab extends StatelessWidget {
                   onTap: () => context.push(RouteNames.lost),
                 ),
                 _QuickButton(
-                  icon: Icons.phone_outlined,
-                  label: 'Контакты',
-                  onTap: () => context.push(RouteNames.contacts),
+                  icon: FontAwesomeIcons.triangleExclamation,
+                  label: 'Правила',
+                  onTap: () => context.push(RouteNames.rules),
                 ),
               ],
             ),

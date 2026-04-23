@@ -1,8 +1,9 @@
+import 'package:dom_vmeste/core/constants/app_constans.dart';
+import 'package:dom_vmeste/core/constants/asset_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../core/constants/app_constants.dart';
-import '../core/constants/asset_paths.dart';
+
 import '../l10n/generated/app_localizations.dart';
 
 /// Кнопка «Войти через Google» — стилизована по гайдлайнам Google.

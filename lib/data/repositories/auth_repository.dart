@@ -1,9 +1,9 @@
+import 'package:dom_vmeste/data/models/user_models.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/services/firebase_auth_service.dart';
 import '../../core/services/firestore_service.dart';
 import '../../core/utils/logger.dart';
-import '../models/user_model.dart';
 
 /// Репозиторий авторизации — координирует работу сервисов.
 ///

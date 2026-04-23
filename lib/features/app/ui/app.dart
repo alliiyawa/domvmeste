@@ -1,11 +1,14 @@
+import 'package:dom_vmeste/core/constants/app_constans.dart';
+import 'package:dom_vmeste/data/repositories/user_repository.dart';
 import 'package:dom_vmeste/features/lost/bloc/lost_bloc.dart';
 import 'package:dom_vmeste/features/lost/bloc/lost_event.dart';
+import 'package:dom_vmeste/features/profile/profile_bloc.dart';
+import 'package:dom_vmeste/features/profile/profile_event.dart';
 import 'package:dom_vmeste/features/repair/bloc/repair_bloc.dart';
 import 'package:dom_vmeste/features/repair/bloc/repair_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/repositories/auth_repository.dart';
@@ -38,6 +41,12 @@ class App extends StatelessWidget {
         BlocProvider(
           create: (_) => AnnouncementsBloc()..add(AnnouncementLoadEvent()),
         ),
+        BlocProvider(
+  create: (context) {
+    final userId = AuthRepository.instance.currentUser?.uid ?? '';
+    return ProfileBloc(UserRepository())..add(LoadProfile(userId));
+  },
+),
         BlocProvider(create: (_) => LostBloc()..add(LostLoadEvent())),
         BlocProvider(create: (_) => RepairBloc()..add(RepairLoadEvent())),
       ],
