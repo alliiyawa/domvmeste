@@ -6,6 +6,8 @@ import 'package:dom_vmeste/features/news/bloc/news_bloc.dart';
 import 'package:dom_vmeste/features/news/bloc/news_event.dart';
 import 'package:dom_vmeste/features/news/bloc/news_state.dart';
 import 'package:dom_vmeste/features/news/ui/news_card.dart';
+import 'package:dom_vmeste/features/notifications/bloc/notifications_bloc.dart';
+import 'package:dom_vmeste/features/notifications/bloc/notifications_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -29,11 +31,22 @@ class MainTab extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('ЖК Delta'),
+        title: const Text('ЖК Delta'),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
+          BlocBuilder<NotificationsBloc, NotificationsState>(
+            builder: (context, state) {
+              final unreadCount = state is NotificationsLoadedState
+                  ? state.unreadCount
+                  : 0;
+              return IconButton(
+                icon: Badge(
+                  isLabelVisible: unreadCount > 0,
+                  label: Text('$unreadCount'),
+                  child: const Icon(Icons.notifications_outlined),
+                ),
+                onPressed: () => context.push(RouteNames.notifications),
+              );
+            },
           ),
         ],
       ),

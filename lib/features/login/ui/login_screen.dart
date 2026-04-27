@@ -135,12 +135,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 30),
-
-                  Text(
-                    'Вход только через Google аккаунт',
-                    style: TextStyle(color: Colors.grey),
-                  ),
                 ],
               ),
             ),

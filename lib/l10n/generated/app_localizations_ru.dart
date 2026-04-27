@@ -45,4 +45,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get signOut => 'Выйти';
+  
+  @override
+  String get tabNotifications => 'Notifications';
 }

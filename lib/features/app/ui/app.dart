@@ -2,6 +2,8 @@ import 'package:dom_vmeste/core/constants/app_constans.dart';
 import 'package:dom_vmeste/data/repositories/user_repository.dart';
 import 'package:dom_vmeste/features/lost/bloc/lost_bloc.dart';
 import 'package:dom_vmeste/features/lost/bloc/lost_event.dart';
+import 'package:dom_vmeste/features/notifications/bloc/notifications_bloc.dart';
+import 'package:dom_vmeste/features/notifications/bloc/notifications_event.dart';
 import 'package:dom_vmeste/features/profile/profile_bloc.dart';
 import 'package:dom_vmeste/features/profile/profile_event.dart';
 import 'package:dom_vmeste/features/repair/bloc/repair_bloc.dart';
@@ -42,13 +44,20 @@ class App extends StatelessWidget {
           create: (_) => AnnouncementsBloc()..add(AnnouncementLoadEvent()),
         ),
         BlocProvider(
-  create: (context) {
-    final userId = AuthRepository.instance.currentUser?.uid ?? '';
-    return ProfileBloc(UserRepository())..add(LoadProfile(userId));
-  },
-),
+          create: (context) {
+            final userId = AuthRepository.instance.currentUser?.uid ?? '';
+            return ProfileBloc(UserRepository())..add(LoadProfile(userId));
+          },
+        ),
         BlocProvider(create: (_) => LostBloc()..add(LostLoadEvent())),
         BlocProvider(create: (_) => RepairBloc()..add(RepairLoadEvent())),
+        BlocProvider(
+          create: (context) {
+            final userId = AuthRepository.instance.currentUser?.uid ?? '';
+            return NotificationsBloc(userId: userId)
+              ..add(NotificationsLoadEvent());
+          },
+        ),
       ],
       child: MaterialApp.router(
         title: AppConstants.appName,

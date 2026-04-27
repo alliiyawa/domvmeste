@@ -26,6 +26,7 @@ class HomeShell extends StatelessWidget {
     }
     return AppConstants.mainTabIndex;
   }
+  
 
   /// Обработчик переключения вкладок.
   void _onTabTapped(BuildContext context, int index) {
@@ -35,6 +36,9 @@ class HomeShell extends StatelessWidget {
         break;
       case AppConstants.profileTabIndex:
         context.go('/home/profile');
+        break;
+        case AppConstants.notificationsTabIndex:
+        context.go('/home/notification-settings');
         break;
     }
   }
@@ -64,6 +68,11 @@ class HomeShell extends StatelessWidget {
             icon: const Icon(Icons.person_outline),
             activeIcon: const Icon(Icons.person),
             label: loc.tabProfile,
+          ),
+           BottomNavigationBarItem(
+            icon: const Icon(Icons.notifications),
+            activeIcon: const Icon(Icons.person),
+            label: loc.tabNotifications,
           ),
         ],
       ),

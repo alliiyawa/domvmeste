@@ -35,6 +35,8 @@ dependencies:
   cloud_firestore: ^6.1.2 # База данных Firestore — хранение данных на сервере
   firebase_storage: ^13.0.6 # Хранение файлов в облаке (фото, документы)
   google_sign_in: ^7.2.0 # Вход через Google-аккаунт
+  firebase_messaging: ^16.1.2
+  flutter_local_notifications: ^17.2.4
 
 
   # Навигация
@@ -62,7 +64,8 @@ dev_dependencies:
 
   # Генерация иконки и сплэш-экрана
   flutter_native_splash: ^2.4.7 # Экран загрузки при запуске приложения
-  flutter_launcher_icons: ^0.14.4 # Генерация иконки приложения для Android и iOS
+  flutter_launcher_icons: ^0.14.4
+ # Генерация иконки приложения для Android и iOS
 
 flutter:
   generate: true
@@ -70,16 +73,10 @@ flutter:
 
   # Ассеты — картинки, иконки, SVG и другие файлы.
   assets:
-    - assets/svg/google_logo.svg
+    - assets/svg/
     - .env
-    - assets/svg/moon.png
-    - assets/svg/garbage.png
-    - assets/svg/animal.png
-    - assets/svg/car.png
-    - assets/svg/fire.png
-    - assets/svg/buildings.png
-    - assets/svg/hammer.png
-    - assets/svg/people.png
-    - assets/svg/chat.png
-    - assets/svg/logo.png
-    - assets/svg/green.svg
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/svg/app_icon.png"

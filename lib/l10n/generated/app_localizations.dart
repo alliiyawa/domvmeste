@@ -145,9 +145,11 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile'**
   String get tabProfile;
-
-  /// Приветствие с именем пользователя на главной вкладке
+  /// Название вкладки 'Уведомления' в нижней навигации
   ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get tabNotifications;
   /// In en, this message translates to:
   /// **'Hello, {name}!'**
   String greeting(String name);

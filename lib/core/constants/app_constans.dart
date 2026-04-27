@@ -19,6 +19,7 @@ class AppConstants {
   /// Индекс вкладки «Профиль».
   static const int profileTabIndex = 1;
 
+  static const int notificationsTabIndex = 2;
   // ── Размеры ────────────────────────────────────────────────────
   /// Размер аватара пользователя (радиус CircleAvatar).
   static const double avatarRadius = 48;

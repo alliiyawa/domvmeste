@@ -1,6 +1,8 @@
 import 'package:dom_vmeste/features/announcements/ui/announcement_detail_screen.dart';
 import 'package:dom_vmeste/features/lost/ui/lost_screen.dart';
 import 'package:dom_vmeste/features/news/ui/news_details_screen.dart';
+import 'package:dom_vmeste/features/notifications/ui/notifications_screen.dart';
+import 'package:dom_vmeste/features/notifications/ui/notifications_settings_screen.dart';
 import 'package:dom_vmeste/features/repair/ui/repair_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -42,6 +44,11 @@ class AppRouter {
           path: RouteNames.register,
           builder: (context, state) => const RegisterScreen(),
         ),
+GoRoute(
+  name: RouteNames.notificationsName,
+  path: RouteNames.notifications,
+  builder: (context, state) => const NotificationsScreen(),
+),
 
         // ── Home (ShellRoute + BottomNav) ────────────────────
         ShellRoute(
@@ -52,6 +59,11 @@ class AppRouter {
               path: RouteNames.main,
               builder: (context, state) => const MainTab(),
             ),
+            GoRoute(
+  name: RouteNames.notificationSettingsName,
+  path: RouteNames.notificationSettings,
+  builder: (context, state) => const NotificationSettingsScreen(),
+),
             GoRoute(
               name: RouteNames.profileName,
               path: RouteNames.profile,

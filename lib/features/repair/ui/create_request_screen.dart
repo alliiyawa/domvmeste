@@ -485,7 +485,13 @@ Row(
         imageUrls: imageUrls,
       ),
     );
-
-    
+ if (mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Заявка отправлена!')),
+    );
+    Navigator.of(context).pop();
   }
 }
+    
+  }
+

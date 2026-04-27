@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dom_vmeste/core/services/notification_service.dart';
 import 'package:dom_vmeste/data/models/user_models.dart';
 
 import '../../../core/utils/logger.dart';
@@ -38,19 +39,22 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     );
   }
 
-  /// Обработчик: изменился статус авторизации.
-  void _onAuthStateChanged(
-    AppAuthStateChanged event,
-    Emitter<AppState> emit,
-  ) {
-    if (event.user.isNotEmpty) {
-      AppLogger.info('AppBloc: пользователь авторизован — ${event.user.name}');
-      emit(AppState.authenticated(event.user));
-    } else {
-      AppLogger.info('AppBloc: пользователь не авторизован');
-      emit(AppState.unauthenticated());
-    }
+void _onAuthStateChanged(
+  AppAuthStateChanged event,
+  Emitter<AppState> emit,
+) async {
+  if (event.user.isNotEmpty) {
+    AppLogger.info('AppBloc: пользователь авторизован — ${event.user.email}');
+    emit(AppState.authenticated(event.user));
+
+    // Инициализируем уведомления после авторизации
+    await NotificationService.instance.initialize(event.user.uid);
+
+  } else {
+    AppLogger.info('AppBloc: пользователь не авторизован');
+    emit(AppState.unauthenticated());
   }
+}
 
   /// Обработчик: пользователь нажал «Выйти».
   Future<void> _onSignOutRequested(
