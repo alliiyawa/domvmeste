@@ -40,10 +40,10 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   final _descriptionController = TextEditingController();
   final _phoneController = TextEditingController();
   final _priceController = TextEditingController();
-   final phoneMask = MaskTextInputFormatter(
-  mask: '+7 (###) ###-##-##',
-  filter: { "#": RegExp(r'[0-9]') },
-);
+  final phoneMask = MaskTextInputFormatter(
+    mask: '+7 (###) ###-##-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
   @override
   void dispose() {
     _titleController.dispose();
@@ -164,7 +164,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      hintText:  '+7 (___) ___-__-__',
+                      hintText: '+7 (___) ___-__-__',
                       filled: true,
                       fillColor: Colors.grey[100],
                       border: OutlineInputBorder(
@@ -262,11 +262,17 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF2F5FA),
       appBar: AppBar(
-        title: const Text('Объявления'),
+        backgroundColor: const Color(0xFFF2F5FA),
+        title: const Text(
+          'Объявления',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
+            color: Colors.black,
             onPressed: () {},
           ),
         ],

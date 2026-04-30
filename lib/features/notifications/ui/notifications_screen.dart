@@ -29,12 +29,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.black),
-            onPressed: () => context.push(RouteNames.notificationSettings),
-          ),
-        ],
+
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

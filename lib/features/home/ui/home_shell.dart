@@ -54,10 +54,13 @@ class HomeShell extends StatelessWidget {
       // Тело — текущая вкладка.
       body: child,
 
-      // Нижняя навигация.
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedIndex,
-        onTap: (index) => _onTabTapped(context, index),
+bottomNavigationBar: BottomNavigationBar(
+  currentIndex: selectedIndex,
+  onTap: (index) => _onTabTapped(context, index),
+  backgroundColor: const Color(0xFFF2F5FA),
+  selectedItemColor: Colors.blue, // ← цвет активной вкладки
+  unselectedItemColor: Colors.grey, // ← цвет неактивных
+  elevation: 10, 
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.home_outlined),

@@ -13,8 +13,10 @@ class RepairScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
-      appBar: AppBar(title: const Text('Ремонт')),
+       backgroundColor: const Color(0xFFF2F5FA),
+      appBar: AppBar(title: const Text('Ремонт', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),  backgroundColor: const Color(0xFFF2F5FA),),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

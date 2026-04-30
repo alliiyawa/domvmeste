@@ -237,9 +237,11 @@ final _phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Потеряшки'),
+      backgroundColor: const Color(0xFFF2F5FA),
+      appBar: AppBar(backgroundColor: const Color(0xFFF2F5FA),
+        title: const Text('Потеряшки', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),

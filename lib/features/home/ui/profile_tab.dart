@@ -23,11 +23,13 @@ class ProfileTab extends StatelessWidget {
           final authUser = context.read<AppBloc>().state.user;
 
           return Scaffold(
+             backgroundColor: const Color(0xFFF2F5FA),
             appBar: AppBar(
-              title: const Text('Профиль'),
+              backgroundColor: const Color(0xFFF2F5FA),
+              title: const Text('Профиль', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,),), 
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.settings_outlined),
+                  icon: const Icon(Icons.settings_outlined),color: Colors.black,
                   onPressed: () {},
                 ),
               ],

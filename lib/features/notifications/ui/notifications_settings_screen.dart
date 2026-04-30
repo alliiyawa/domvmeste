@@ -47,10 +47,6 @@ class _NotificationSettingsScreenState
       appBar: AppBar(
         backgroundColor: const Color(0xFFF2F5FA),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

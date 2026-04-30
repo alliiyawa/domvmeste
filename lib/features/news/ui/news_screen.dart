@@ -212,10 +212,11 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Новости'),
+              backgroundColor: const Color(0xFFF2F5FA),
+      appBar: AppBar(        backgroundColor: const Color(0xFFF2F5FA),
+        title: const Text('Новости', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
         actions: [
-          IconButton(
+          IconButton(color: Colors.black,
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {},
           ),

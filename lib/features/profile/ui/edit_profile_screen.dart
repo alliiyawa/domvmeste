@@ -1,4 +1,3 @@
-
 import 'package:dom_vmeste/data/models/user_models.dart';
 import 'package:dom_vmeste/features/app/bloc/app_bloc.dart';
 import 'package:dom_vmeste/features/app/bloc/app_event.dart';
@@ -51,7 +50,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final authUser = context.read<AppBloc>().state.user;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Редактирование профиля')),
+      backgroundColor: const Color(0xFFF2F5FA),
+      appBar: AppBar(
+        title: const Text(
+          'Редактирование профиля',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFFF2F5FA),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -81,10 +87,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Сменить фото',
-              style: TextStyle(color: Colors.grey),
-            ),
+            const Text('Сменить фото', style: TextStyle(color: Colors.grey)),
             const SizedBox(height: 24),
 
             // ── Имя ───────────────────────────────────────
@@ -115,7 +118,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             const SizedBox(height: 12),
 
-            // ── Телефон ───────────────────────────────────
             _buildField(
               'Телефон',
               phoneController,
@@ -172,10 +174,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Сохранить',
-                  style: TextStyle(fontSize: 16),
-                ),
+                child: const Text('Сохранить', style: TextStyle(fontSize: 16)),
               ),
             ),
             const SizedBox(height: 12),
@@ -195,7 +194,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
             const SizedBox(height: 12),
-
           ],
         ),
       ),
@@ -216,12 +214,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         suffixIcon: suffixIcon != null
             ? Icon(suffixIcon, color: Colors.grey)
             : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
 }
-
-

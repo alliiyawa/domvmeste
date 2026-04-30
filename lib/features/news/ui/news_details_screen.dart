@@ -19,8 +19,8 @@ class NewsDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Новость')),
+    return Scaffold( backgroundColor: const Color(0xFFF2F5FA),
+      appBar: AppBar(title: const Text('Новость', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),  backgroundColor: const Color(0xFFF2F5FA),),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
